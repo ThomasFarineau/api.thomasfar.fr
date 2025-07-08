@@ -1,5 +1,6 @@
 import express from 'express';
 import update from "./controllers/update";
+import 'dotenv/config';
 
 const app = express();
 app.use(express.json());
