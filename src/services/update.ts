@@ -1,7 +1,10 @@
 import { spawn } from 'child_process';
 import { execSync } from 'child_process';
+import config from 'config';
 
-const UPDATE_TOKEN = process.env.UPDATE_TOKEN || '';
+
+const UPDATE_TOKEN = config.get<string>('updateToken');
+
 
 /**
  * Exécute une commande en enfant et attend sa fin.
@@ -46,5 +49,6 @@ export async function restartApp(): Promise<void> {
  * Vérifie la validité du token d'update.
  */
 export function validateToken(token: string | undefined): boolean {
+    console.log(token, UPDATE_TOKEN);
     return token === UPDATE_TOKEN;
 }

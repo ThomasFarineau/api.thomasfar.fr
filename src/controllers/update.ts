@@ -1,4 +1,3 @@
-// src/controllers/updateController.ts
 import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
 import * as updateService from '../services/update';
 
