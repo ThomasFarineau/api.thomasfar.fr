@@ -1,5 +1,6 @@
-import {UpdateService} from "@services/update";
+import {UpdateService} from "@services/UpdateService";
 import {ParameterizedContext} from "koa";
+import Controller from "@i/controller.i";
 
 class UpdateController implements Controller {
 

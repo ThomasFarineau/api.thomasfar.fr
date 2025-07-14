@@ -1,3 +1,3 @@
-interface Service {
+export default interface Service {
 
 }

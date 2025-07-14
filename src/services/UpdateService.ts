@@ -1,26 +1,14 @@
 import config from "config";
 import {execSync, spawn} from "node:child_process";
+import Service from "../interfaces/service.i";
 
 const UPDATE_TOKEN = config.get<string>('updateToken');
 
-export class UpdateService implements Service{
-    private updateToken: string;
+export class UpdateService implements Service {
+    private readonly updateToken: string;
 
     constructor() {
         this.updateToken = UPDATE_TOKEN;
-    }
-
-    /**
-     * Exécute une commande en enfant et attend sa fin.
-     */
-    private async runCommand(cmd: string, args: string[]): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const child = spawn(cmd, args, { stdio: 'inherit' });
-            child.on('close', code => code === 0
-                ? resolve()
-                : reject(new Error(`${cmd} ${args.join(' ')} failed with code ${code}`))
-            );
-        });
     }
 
     /**
@@ -55,5 +43,15 @@ export class UpdateService implements Service{
     validateToken(token: string | undefined): boolean {
         console.log(token, this.updateToken);
         return token === this.updateToken;
+    }
+
+    /**
+     * Exécute une commande en enfant et attend sa fin.
+     */
+    private async runCommand(cmd: string, args: string[]): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const child = spawn(cmd, args, {stdio: 'inherit'});
+            child.on('close', code => code === 0 ? resolve() : reject(new Error(`${cmd} ${args.join(' ')} failed with code ${code}`)));
+        });
     }
 }

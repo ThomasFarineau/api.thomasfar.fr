@@ -2,7 +2,7 @@ import Koa from 'koa';
 import bodyParser from '@koa/bodyparser';
 import Router from '@koa/router';
 import config from 'config';
-import updateController from '@controllers/update';
+import updateController from '@controllers/UpdateController';
 
 const app = new Koa();
 const router = new Router();
