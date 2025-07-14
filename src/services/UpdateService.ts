@@ -41,7 +41,6 @@ export default class UpdateService implements Service {
      * Vérifie la validité du token d'update.
      */
     validateToken(token: string | undefined): boolean {
-        console.log(token, this.updateToken);
         return token === this.updateToken;
     }
 
