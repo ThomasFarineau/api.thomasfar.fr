@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"
@@ -19,7 +20,10 @@
       ],
       "@utils/*": [
         "utils/*"
-      ]
+      ],
+      "@decorators/*": [
+        "decorators/*"
+      ],
     }
   }
 }

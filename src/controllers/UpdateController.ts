@@ -1,13 +1,25 @@
-import {UpdateService} from "@services/UpdateService";
+import UpdateService from "@services/UpdateService";
 import {ParameterizedContext} from "koa";
-import Controller from "../interfaces/controller.i";
+import {Controller, Get, Post} from "../decorators";
 
-class UpdateController implements Controller {
+
+@Controller('/update')
+export default class UpdateController {
 
     constructor(private updateService = new UpdateService()) {
     }
 
-    async updateHandler(ctx: ParameterizedContext) {
+    @Get('') async checkUpdateHandler(ctx: ParameterizedContext) {
+        try {
+            const isUpToDate = await this.updateService.isUpToDate();
+            ctx.body = {upToDate: isUpToDate};
+        } catch (err: any) {
+            ctx.status = 500;
+            ctx.body = {error: err.message};
+        }
+    }
+
+    @Post('') async updateHandler(ctx: ParameterizedContext) {
         const token = (ctx.request.query.token as string) || (ctx.request.headers['x-update-token'] as string);
         if (!this.updateService.validateToken(token)) {
             ctx.status = 403;
@@ -35,4 +47,3 @@ class UpdateController implements Controller {
     }
 }
 
-export default new UpdateController();

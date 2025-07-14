@@ -4,7 +4,7 @@ import Service from "../interfaces/service.i";
 
 const UPDATE_TOKEN = config.get<string>('updateToken');
 
-export class UpdateService implements Service {
+export default class UpdateService implements Service {
     private readonly updateToken: string;
 
     constructor() {
