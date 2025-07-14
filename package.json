@@ -14,13 +14,13 @@
   "type": "commonjs",
   "dependencies": {
     "config": "^4.0.0",
-    "express": "^5.1.0",
-    "typescript": "^5.8.3",
-    "ts-node": "^10.9.2"
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "@types/config": "^3.3.5",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.0.10"
+    "@types/node": "^24.0.10",
+    "typescript": "^5.8.3",
+    "ts-node": "^10.9.2"
   }
 }

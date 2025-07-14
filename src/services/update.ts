@@ -34,7 +34,7 @@ export async function isUpToDate(): Promise<boolean> {
  */
 export async function updateCode(): Promise<void> {
     await runCommand('git', ['reset', '--hard', 'origin/main']);
-    await runCommand('npm', ['ci']);
+    await runCommand('npm', ['ci', '--include=dev']);
     await runCommand('npm', ['run', 'build']);
 }
 
