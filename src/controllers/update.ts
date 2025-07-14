@@ -1,28 +1,29 @@
-import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
+import {RequestHandler, Response, Router} from 'express';
 import * as updateService from '../services/update';
 
 const router = Router();
 
 // @ts-ignore
-const updateHandler: RequestHandler = async (
-    req: Request<{ params: any }, any, any, { token: string }>,
-    res: Response<{ upToDate?: boolean; updated?: boolean } | { error: string }>,
-    next: NextFunction
-) => {
-    const token = req.query.token || req.header('x-update-token');
+const updateHandler: RequestHandler = async (req, res: Response<{ upToDate?: boolean; message?: string } | {
+    error: string
+}>, next) => {
+    const token = (req.query.token || req.header('x-update-token')) as string;
     if (!updateService.validateToken(token)) {
-        return res.status(403).json({ error: 'Forbidden' });
+        return res.status(403).json({error: 'Forbidden'});
     }
 
     try {
         if (await updateService.isUpToDate()) {
-            return res.json({ upToDate: true });
+            return res.json({upToDate: true});
         }
 
         await updateService.updateCode();
-        await updateService.restartApp();
 
-        return res.json({ updated: true });
+        res.json({message: 'Restarting'});
+
+        updateService.restartApp().catch(err => {
+            console.error('PM2 restart failed:', err);
+        });
     } catch (error) {
         next(error);
     }
