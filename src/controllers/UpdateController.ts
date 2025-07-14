@@ -1,6 +1,6 @@
 import {UpdateService} from "@services/UpdateService";
 import {ParameterizedContext} from "koa";
-import Controller from "@i/controller.i";
+import Controller from "../interfaces/controller.i";
 
 class UpdateController implements Controller {
 
