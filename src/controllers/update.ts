@@ -1,34 +1,37 @@
-import {RequestHandler, Response, Router} from 'express';
-import * as updateService from '../services/update';
+import {UpdateService} from "@services/update";
+import {ParameterizedContext} from "koa";
 
-const router = Router();
+class UpdateController implements Controller {
 
-// @ts-ignore
-const updateHandler: RequestHandler = async (req, res: Response<{ upToDate?: boolean; message?: string } | {
-    error: string
-}>, next) => {
-    const token = (req.query.token || req.header('x-update-token')) as string;
-    if (!updateService.validateToken(token)) {
-        return res.status(403).json({error: 'Forbidden'});
+    constructor(private updateService = new UpdateService()) {
     }
 
-    try {
-        if (await updateService.isUpToDate()) {
-            return res.json({upToDate: true});
+    async updateHandler(ctx: ParameterizedContext) {
+        const token = (ctx.request.query.token as string) || (ctx.request.headers['x-update-token'] as string);
+        if (!this.updateService.validateToken(token)) {
+            ctx.status = 403;
+            ctx.body = {error: 'Forbidden'};
+            return;
         }
 
-        await updateService.updateCode();
+        try {
+            if (await this.updateService.isUpToDate()) {
+                ctx.body = {upToDate: true};
+                return;
+            }
 
-        res.json({message: 'Restarting'});
+            await this.updateService.updateCode();
 
-        updateService.restartApp().catch(err => {
-            console.error('PM2 restart failed:', err);
-        });
-    } catch (error) {
-        next(error);
+            ctx.body = {message: 'Restarting'};
+
+            this.updateService.restartApp().catch(err => {
+                console.error('PM2 restart failed:', err);
+            });
+        } catch (err: any) {
+            ctx.status = 500;
+            ctx.body = {error: err.message};
+        }
     }
-};
+}
 
-router.post('/', updateHandler);
-
-export default router;
+export default new UpdateController();
