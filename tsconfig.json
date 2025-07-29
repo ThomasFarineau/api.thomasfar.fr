@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"
@@ -23,6 +24,9 @@
       ],
       "@decorators/*": [
         "decorators/*"
+      ],
+      "@helpers/*": [
+        "helpers/*"
       ],
     }
   }
