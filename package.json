@@ -17,6 +17,7 @@
     "@koa/router": "^13.1.1",
     "config": "^4.0.0",
     "koa": "^3.0.0",
+    "mongodb": "^6.18.0",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
