@@ -11,6 +11,7 @@ import DefaultController from "./controllers/DefaultController";
 import DocsController from "./controllers/DocsController";
 import {OpenAPI} from "@helpers/OpenAPI";
 import {getSpec} from "@helpers/decorators/Spec";
+import {ArckServer} from "@helpers/arck-server";
 
 const app = new Koa();
 const router = new Router();
@@ -37,10 +38,6 @@ function registerControllers(controllers: any[], router: Router) {
         const prefix: string = Reflect.getMetadata(CONTROLLER_KEY, ControllerClass) || '';
         const routes: any[] = Reflect.getMetadata(ROUTES_KEY, ControllerClass) || [];
         const controllerSpec = getSpec(ControllerClass) || {};
-
-
-
-
 
         OpenAPI.getInstance().addTag({
             name: ControllerClass.name,
@@ -85,5 +82,9 @@ app.use(router.allowedMethods());
 
 // Démarrage du serveur
 app.listen(PORT, () => {
-    console.log(`API running on http://localhost:${PORT}`);
 });
+
+ArckServer
+    .create(PORT)
+    .addControllers([UpdateController, EntityController, DatabaseController, DefaultController, DocsController])
+    .listen()
