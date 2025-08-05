@@ -1,9 +1,9 @@
-import nodePackage from "../../package.json";
+import nodePackage from "../../../package.json";
 import config from "config";
 import _ from "lodash";
 
-export class OpenAPI {
-    private static instance: OpenAPI;
+export class OpenAPIService {
+    private static instance: OpenAPIService;
     private readonly openApiDoc: any;
 
     private constructor() {
@@ -14,11 +14,11 @@ export class OpenAPI {
         };
     }
 
-    public static getInstance(): OpenAPI {
-        if (!OpenAPI.instance) {
-            OpenAPI.instance = new OpenAPI();
+    public static getInstance(): OpenAPIService {
+        if (!OpenAPIService.instance) {
+            OpenAPIService.instance = new OpenAPIService();
         }
-        return OpenAPI.instance;
+        return OpenAPIService.instance;
     }
 
     public getOpenApiJson() {
@@ -54,4 +54,24 @@ export class OpenAPI {
     public addTags(tags: { name: string, description?: string }[]): void {
         tags.forEach(tag => this.addTag(tag));
     }
+
+    setup(config: SetupConfig) {
+        this.openApiDoc.info = {
+            title: config.title || nodePackage.name,
+            version: config.version || nodePackage.version,
+            description: config.description || nodePackage.description,
+        };
+
+        if (config.servers) {
+            this.openApiDoc.servers = config.servers;
+        }
+    }
+}
+
+export type SetupConfig = {
+    title?: string;
+    version?: string;
+    description?: string;
+    servers?: { url: string }[];
+    tags?: { name: string, description?: string }[];
 }

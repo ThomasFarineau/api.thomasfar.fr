@@ -1,18 +1,23 @@
-import {Controller, Get} from "../decorators";
-import {OpenAPI} from "@helpers/OpenAPI";
+import {Controller, Get} from "../../decorators";
+import {OpenAPIService} from "@helpers/openapi/service";
 import {Spec} from "@helpers/decorators/Spec";
 import {ParameterizedContext} from "koa";
-
 
 @Controller('/docs')
 @Spec({
     name: 'API Documentation', description: 'API documentation using Redoc and OpenAPI',
 })
-export default class DocsController {
+export default class OpenAPIController {
 
+    @Get('') @Spec({
+        name: 'API Documentation Home', description: 'Home page for API documentation',
+    }) async index(ctx: ParameterizedContext) {
+        ctx.redirect('/docs/swagger');
+    }
 
-    @Get("/swagger")
-    async swagger(ctx: ParameterizedContext) {
+    @Get("/swagger") @Spec({
+        name: 'Swagger UI', description: 'Swagger UI for API documentation',
+    }) async swagger(ctx: ParameterizedContext) {
         ctx.type = "html";
         ctx.body = `
         <!DOCTYPE html>
@@ -40,9 +45,9 @@ export default class DocsController {
         `;
     }
 
-    @Get('') @Spec({
-        name: 'API Documentation Home', description: 'Home page for API documentation',
-    }) async index(ctx: ParameterizedContext) {
+    @Get('/redoc') @Spec({
+        name: 'Redoc', description: 'Redoc for API documentation',
+    }) async redoc(ctx: ParameterizedContext) {
         ctx.type = 'html';
         ctx.body = `
       <!DOCTYPE html>
@@ -63,6 +68,35 @@ export default class DocsController {
     `;
     }
 
+    @Get('/elements') @Spec({
+        name: 'API Elements', description: 'List of API elements',
+    }) async elements(ctx: ParameterizedContext) {
+        ctx.type = 'html';
+        ctx.body = `
+      <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Elements in HTML</title>
+    <!-- Embed elements Elements via Web Component -->
+    <script src="https://unpkg.com/@stoplight/elements/web-components.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">
+  </head>
+  <body>
+
+    <elements-api
+      apiDescriptionUrl="/docs/openapi.json"
+      router="hash"
+      layout="sidebar"
+    />
+
+  </body>
+</html>
+        
+    `;
+    }
+
     @Get('/openapi') @Spec({
         name: 'OpenAPI Specification', description: 'Redirect to OpenAPI JSON specification',
     }) async openapi(ctx: any) {
@@ -73,6 +107,6 @@ export default class DocsController {
         name: 'OpenAPI JSON', description: 'Get the OpenAPI JSON specification',
     }) async openapiJson(ctx: any) {
         ctx.set('Content-Type', 'application/json');
-        ctx.body = OpenAPI.getInstance().getOpenApiJson();
+        ctx.body = OpenAPIService.getInstance().getOpenApiJson();
     }
 }
