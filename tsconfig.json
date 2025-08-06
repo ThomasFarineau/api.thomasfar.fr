@@ -9,21 +9,14 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "baseUrl": "src",
     "paths": {
-      "@services/*": [
-        "services/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@decorators/*": [
-        "decorators/*"
-      ],
+      "@services/*": ["services/*"],
+      "@utils/*": ["utils/*"],
+      "@decorators/*": ["decorators/*"],
+      "@helpers/*": ["helpers/*"]
     }
   }
 }
