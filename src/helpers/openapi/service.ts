@@ -7,6 +7,15 @@ export type SetupConfig = {
   version?: string;
   description?: string;
   servers?: { url: string }[];
+  components?: {
+    schemas?: { [name: string]: any };
+    responses?: { [name: string]: any };
+    parameters?: { [name: string]: any };
+    examples?: { [name: string]: any };
+    requestBodies?: { [name: string]: any };
+    headers?: { [name: string]: any };
+    securitySchemes?: { [name: string]: any  };
+  },
   tags?: { name: string; description?: string }[];
 };
 
@@ -93,6 +102,13 @@ export class OpenAPIService {
 
     if (config.servers) {
       this.openApiDoc.servers = config.servers;
+    }
+
+    if (config.components) {
+      this.openApiDoc.components = {
+        ...this.openApiDoc.components,
+        ...config.components
+      };
     }
   }
 }

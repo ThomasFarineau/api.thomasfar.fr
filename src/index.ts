@@ -5,11 +5,23 @@ import EntityController from "./controllers/EntityController";
 import DatabaseController from "./controllers/DatabaseController";
 import DefaultController from "./controllers/DefaultController";
 import { ArckServer } from "@helpers/arck-server";
+import Controller from "./auth/controller";
 
 const PORT = config.get<number>("port");
 
 ArckServer.create(PORT)
-  .enableOpenAPI()
+  .enableOpenAPI({
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          bearerFormat: "JWT"
+        }
+      }
+    }
+  })
   .addController(DefaultController)
+  .addController(Controller)
   .addControllers([UpdateController, EntityController, DatabaseController])
   .listen();

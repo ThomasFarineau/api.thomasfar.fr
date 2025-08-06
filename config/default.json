@@ -1,4 +1,15 @@
 {
   "port": 3000,
-  "updateToken": "your_update_token_here"
+  "updateToken": "your_update_token_here",
+  "jwt": {
+    "accessSecret": "ACCESS_SECRET",
+    "refreshSecret": "REFRESH_SECRET",
+    "accessExpiresIn": "15m",
+    "refreshExpiresIn": "7d"
+  },
+  "mongo": {
+    "uri": "mongo_uri_here",
+    "dbName": "your_db_name_here"
+  },
+  "url": "http://localhost:3000"
 }

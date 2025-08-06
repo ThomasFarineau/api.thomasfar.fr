@@ -1,7 +1,8 @@
-import { Controller, Get } from "../decorators";
+import {Controller, Get, Use} from "../decorators";
 import { ParameterizedContext } from "koa";
 import { DatabaseService } from "@services/DatabaseService";
 import { Spec } from "@helpers/decorators/OpenAPI";
+import {authMiddleware} from "../auth/middleware";
 
 @Controller("/database")
 @Spec({
@@ -10,9 +11,15 @@ import { Spec } from "@helpers/decorators/OpenAPI";
 })
 export default class DatabaseController {
   @Get("/health")
+  @Use(authMiddleware)
   @Spec({
     name: "Get Database Health",
-    description: "Check if the database connection is healthy"
+    description: "Check if the database connection is healthy",
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
   })
   async health(ctx: ParameterizedContext) {
     const isOk = await DatabaseService.verifyConnection();
@@ -29,9 +36,15 @@ export default class DatabaseController {
   }
 
   @Get("/info")
+  @Use(authMiddleware)
   @Spec({
     name: "Get Database Info",
-    description: "Retrieve information about the database status"
+    description: "Retrieve information about the database status",
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
   })
   async info(ctx: ParameterizedContext) {
     const status = await DatabaseService.getStatus();

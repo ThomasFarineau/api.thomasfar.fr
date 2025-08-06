@@ -82,6 +82,7 @@ export class ArckServer {
             tags: [ControllerClass.name],
             summary: methodSpec.name || method,
             description: methodSpec.description,
+            security: methodSpec.security || [],
             parameters: parameters.length > 0 ? parameters : undefined,
             responses: _.reduce(
               methodSpec.responses,
@@ -115,6 +116,10 @@ export class ArckServer {
   }
 
   listen(): void {
+    this.app.use(async (ctx, next) => {
+      this.logger.info(`Received request: ${ctx.method} ${ctx.url}`);
+      await next();
+    });
     this.app.use(this.router.routes());
     this.app.use(this.router.allowedMethods());
     this.app.listen(this.port, () => {
