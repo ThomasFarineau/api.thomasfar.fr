@@ -6,7 +6,8 @@ export function Spec(spec: any): ClassDecorator & MethodDecorator {
   return (target: any, propertyKey?: string | symbol) => {
     const oldSpec = getSpec(target, propertyKey) || {};
     const newSpec = {
-      ...oldSpec, ...spec 
+      ...oldSpec,
+      ...spec
     };
     if (propertyKey) {
       Reflect.defineMetadata(SPEC_KEY, newSpec, target, propertyKey);

@@ -6,7 +6,7 @@ import Koa from "koa";
 import Router from "@koa/router";
 import bodyParser from "@koa/bodyparser";
 import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTES_KEY } from "../decorators";
-import {ApiResponse, getSpec} from "@helpers/decorators/OpenAPI";
+import { ApiResponse, getSpec } from "@helpers/decorators/OpenAPI";
 import _ from "lodash";
 
 export class ArckServer {
