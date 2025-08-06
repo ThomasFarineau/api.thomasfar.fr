@@ -1,16 +1,15 @@
-import { makeLogger } from "@helpers/logger";
-
-import OpenAPIController from "./openapi/controller";
-import { OpenAPIService, SetupConfig } from "@helpers/openapi/service";
-import Koa from "koa";
-import Router from "@koa/router";
-import bodyParser from "@koa/bodyparser";
-import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTES_KEY } from "../decorators";
 import { ApiResponse, getSpec } from "@helpers/decorators/OpenAPI";
+import { makeLogger } from "@helpers/logger";
+import { OpenAPIService, SetupConfig, OpenAPIController } from "@helpers/openapi";
+import bodyParser from "@koa/bodyparser";
+import Router from "@koa/router";
+import Koa from "koa";
 import _ from "lodash";
 
+import { CONTROLLER_KEY, MIDDLEWARE_KEY, ROUTES_KEY } from "../decorators";
+
 export class ArckServer {
-  logger;
+  private logger;
 
   private useOpenAPI: boolean = false;
 
@@ -31,11 +30,11 @@ export class ArckServer {
     this.app.use(bodyParser());
   }
 
-  static create(port: number, host: string = "localhost"): ArckServer {
+  public static create(port: number, host: string = "localhost"): ArckServer {
     return new ArckServer(port, host);
   }
 
-  enableOpenAPI(config: SetupConfig = {}): ArckServer {
+  public enableOpenAPI(config: SetupConfig = {}): ArckServer {
     this.useOpenAPI = true;
     this.logger.info("OpenAPI enabled.");
 
@@ -45,7 +44,7 @@ export class ArckServer {
     return this;
   }
 
-  addController(ControllerClass: any): ArckServer {
+  public addController(ControllerClass: any): ArckServer {
     const instance =
       typeof ControllerClass === "function"
         ? new ControllerClass()
@@ -69,7 +68,9 @@ export class ArckServer {
     }
 
     routes.forEach((route) => {
-      const { method, path, handler } = route;
+      const {
+        method, path, handler 
+      } = route;
       const fullPath = prefix + path;
       const methodSpec = getSpec(instance, handler) || {};
 
@@ -108,14 +109,14 @@ export class ArckServer {
     return this;
   }
 
-  addControllers(controllers: any[]): ArckServer {
+  public addControllers(controllers: any[]): ArckServer {
     controllers.forEach((controller) => {
       this.addController(controller);
     });
     return this;
   }
 
-  listen(): void {
+  public listen(): void {
     this.app.use(async (ctx, next) => {
       this.logger.info(`Received request: ${ctx.method} ${ctx.url}`);
       await next();
@@ -128,7 +129,7 @@ export class ArckServer {
   }
 }
 
-function extractPathParametersFromColonPath(path: string) {
+function extractPathParametersFromColonPath(path: string): any[] {
   const matches = Array.from(path.matchAll(/:([a-zA-Z0-9_]+)/g));
   return matches.map((match) => ({
     name: match[1],
@@ -140,6 +141,6 @@ function extractPathParametersFromColonPath(path: string) {
   }));
 }
 
-function convertColonPathToOpenAPI(path: string) {
+function convertColonPathToOpenAPI(path: string): string {
   return path.replace(/:([a-zA-Z0-9_]+)/g, "{$1}");
 }

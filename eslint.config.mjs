@@ -1,6 +1,7 @@
-import tseslint from "@typescript-eslint/eslint-plugin";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
 import decoratorPosition from "eslint-plugin-decorator-position";
+import importPlugin from "eslint-plugin-import";
 
 export default [
   {
@@ -8,44 +9,102 @@ export default [
     languageOptions: {
       parser: tsparser,
       parserOptions: {
-        project: "./tsconfig.json"
+        project: "./tsconfig.json",
+        ecmaVersion: 2020,
+        sourceType: "module"
       }
     },
     plugins: {
-      "@typescript-eslint": tseslint,
+      "@typescript-eslint": tsPlugin,
+      import: importPlugin,
       "decorator-position": decoratorPosition
     },
     rules: {
-      indent: ["error", 2],
-      "prefer-template": "error",
+      /* ===== import ordering ===== */
+      "import/order": [
+        "error",
+        {
+          alphabetize: {
+            order: "asc", caseInsensitive: true 
+          },
+          groups: ["builtin", "external", "internal", ["parent", "sibling"], "index"],
+          "newlines-between": "always"
+        }
+      ],
 
+      /* ===== general styling ===== */
+      indent: ["error", 2],
+      "no-multiple-empty-lines": ["error", {
+        max: 1, maxEOF: 1 
+      }],
+      "padding-line-between-statements": [
+        "error",
+        {
+          blankLine: "always", prev: "*", next: "export" 
+        },
+        {
+          blankLine: "always", prev: "export", next: "*" 
+        }
+      ],
+      "prefer-template": "error",
+      "comma-dangle": ["error", "never"],
+
+      /* ===== objects/arrays/functions ===== */
       "object-curly-newline": [
         "error",
         {
           ObjectExpression: {
-            multiline: true,
-            minProperties: 2,
-            consistent: true
-          }
+            multiline: true, minProperties: 2, consistent: true 
+          },
+          ObjectPattern:    {
+            multiline: true, minProperties: 2, consistent: true 
+          },
+          ImportDeclaration:{ consistent: true },
+          ExportDeclaration:{ consistent: true }
         }
       ],
-      "array-element-newline": [
+      "array-element-newline": ["error", { ArrayExpression: "consistent" }],
+      "@typescript-eslint/explicit-function-return-type": [
+        "warn",
+        {
+          allowExpressions: true, allowTypedFunctionExpressions: true 
+        }
+      ],
+      "@typescript-eslint/explicit-member-accessibility": [
         "error",
         {
-          ArrayExpression: "consistent"
+          accessibility: "explicit", overrides: { constructors: "no-public" } 
         }
       ],
-      "lines-between-class-members": ["error", "always"],
-      "comma-dangle": ["error", "never"],
+
+      /* ===== decorators ===== */
       "decorator-position/decorator-position": [
         "error",
         {
-          printWidth: 1,
-          properties: "prefer-inline",
-          methods: "above"
+          printWidth: 80, properties: "prefer-inline", methods: "above" 
         }
       ],
-      "@typescript-eslint/no-unused-vars": "warn"
+
+      /* ===== class member order ===== */
+      "@typescript-eslint/member-ordering": [
+        "error",
+        {
+          default: [
+            "static-field",
+            "instance-field",
+            "static-method",
+            "instance-method"
+          ]
+        }
+      ],
+
+      /* ===== unused vars ===== */
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_", varsIgnorePattern: "^_" 
+        }
+      ]
     }
   }
 ];

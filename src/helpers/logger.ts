@@ -10,7 +10,9 @@ export type Logger = winston.Logger & {
  */
 export function makeLogger(type: string): Logger {
   const customFormat = winston.format.printf(
-    ({ timestamp, level, message, type }) => {
+    ({
+      timestamp, level, message, type 
+    }) => {
       return `[${type || "APP"}] [${level}] [${timestamp}] ${message}`;
     }
   );

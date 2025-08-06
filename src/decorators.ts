@@ -1,6 +1,9 @@
 export const ROUTES_KEY = Symbol("routes");
+
 export const CONTROLLER_KEY = Symbol("controller");
+
 export const DOCS_KEY = Symbol("docs");
+
 export const MIDDLEWARE_KEY = Symbol("middleware");
 
 export function Controller(prefix: string = ""): ClassDecorator {
@@ -23,6 +26,7 @@ function createMethodDecorator(method: string) {
 }
 
 export const Get = createMethodDecorator("get");
+
 export const Post = createMethodDecorator("post");
 
 export const Put = createMethodDecorator("put");

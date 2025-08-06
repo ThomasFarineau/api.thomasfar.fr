@@ -1,5 +1,6 @@
 import UpdateService from "@services/UpdateService";
 import { ParameterizedContext } from "koa";
+
 import { Controller, Get, Post } from "../decorators";
 
 @Controller("/update")
@@ -7,7 +8,7 @@ export default class UpdateController {
   constructor(private updateService = new UpdateService()) {}
 
   @Get("")
-  async checkUpdateHandler(ctx: ParameterizedContext) {
+  public async checkUpdateHandler(ctx: ParameterizedContext): Promise<void> {
     try {
       const isUpToDate = await this.updateService.isUpToDate();
       ctx.body = {
@@ -22,7 +23,7 @@ export default class UpdateController {
   }
 
   @Post("")
-  async updateHandler(ctx: ParameterizedContext) {
+  public async updateHandler(ctx: ParameterizedContext): Promise<void> {
     const token =
       (ctx.request.query.token as string) ||
       (ctx.request.headers["x-update-token"] as string);

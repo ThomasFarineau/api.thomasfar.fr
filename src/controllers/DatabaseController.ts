@@ -1,8 +1,9 @@
-import {Controller, Get, Use} from "../decorators";
-import { ParameterizedContext } from "koa";
-import { DatabaseService } from "@services/DatabaseService";
 import { Spec } from "@helpers/decorators/OpenAPI";
+import { DatabaseService } from "@services/DatabaseService";
+import { ParameterizedContext } from "koa";
+
 import {authMiddleware} from "../auth/middleware";
+import {Controller, Get, Use} from "../decorators";
 
 @Controller("/database")
 @Spec({
@@ -21,7 +22,7 @@ export default class DatabaseController {
       }
     ]
   })
-  async health(ctx: ParameterizedContext) {
+  public async health(ctx: ParameterizedContext): Promise<void> {
     const isOk = await DatabaseService.verifyConnection();
     if (!isOk) {
       ctx.status = 503;
@@ -46,7 +47,7 @@ export default class DatabaseController {
       }
     ]
   })
-  async info(ctx: ParameterizedContext) {
+  public async info(ctx: ParameterizedContext): Promise<void> {
     const status = await DatabaseService.getStatus();
     if (!status.ok) {
       ctx.status = 503;

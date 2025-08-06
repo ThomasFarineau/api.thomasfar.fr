@@ -1,6 +1,6 @@
-import { Collection, Filter, ObjectId, OptionalUnlessRequiredId, WithId } from "mongodb";
 import { connectToDB } from "@helpers/db";
 import { BaseEntity } from "@helpers/types/BaseEntity";
+import { Collection, Filter, ObjectId, OptionalUnlessRequiredId, WithId } from "mongodb";
 
 export class Repository<T extends BaseEntity> {
   private readonly collectionName: string;
@@ -9,29 +9,29 @@ export class Repository<T extends BaseEntity> {
     this.collectionName = collectionName;
   }
 
-  async findAll(): Promise<WithId<T>[]> {
+  public async findAll(): Promise<WithId<T>[]> {
     const col = await this.collection();
     return col.find({}).toArray();
   }
 
-  async findById(id: string): Promise<WithId<T> | null> {
+  public async findById(id: string): Promise<WithId<T> | null> {
     const col = await this.collection();
     return col.findOne({
       _id: new ObjectId(id)
     } as Filter<T>);
   }
 
-  async findOne(query: { filter: Filter<T> }): Promise<WithId<T> | null> {
+  public async findOne(query: { filter: Filter<T> }): Promise<WithId<T> | null> {
     const col = await this.collection();
     return col.findOne(query);
   }
 
-  async count(query: Filter<T> = {}): Promise<number> {
+  public async count(query: Filter<T> = {}): Promise<number> {
     const col = await this.collection();
     return col.countDocuments(query);
   }
 
-  async exists(id: string): Promise<boolean> {
+  public async exists(id: string): Promise<boolean> {
     const col = await this.collection();
     const count = await col.countDocuments({
       _id: new ObjectId(id)
@@ -39,7 +39,7 @@ export class Repository<T extends BaseEntity> {
     return count > 0;
   }
 
-  async find(
+  public async find(
     query: Filter<T> = {},
     options: { limit?: number; skip?: number } = {}
   ): Promise<WithId<T>[]> {
@@ -51,7 +51,7 @@ export class Repository<T extends BaseEntity> {
       .toArray();
   }
 
-  async create(
+  public async create(
     doc: Omit<
       T,
       "_id" | "_createdAt" | "_updatedAt" | "_createdBy" | "_version"
@@ -74,7 +74,7 @@ export class Repository<T extends BaseEntity> {
     } as WithId<T>;
   }
 
-  async update(
+  public async update(
     id: string,
     update: Partial<T>,
     updatedBy?: string
@@ -125,7 +125,7 @@ export class Repository<T extends BaseEntity> {
     return res.modifiedCount > 0;
   }
 
-  async delete(id: string): Promise<boolean> {
+  public async delete(id: string): Promise<boolean> {
     const col = await this.collection();
     const res = await col.deleteOne({
       _id: new ObjectId(id)

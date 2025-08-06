@@ -40,6 +40,7 @@
     "cross-env": "^10.0.0",
     "eslint": "^9.32.0",
     "eslint-plugin-decorator-position": "^6.0.0",
+    "eslint-plugin-import": "^2.32.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.4",
     "nodemon": "^3.1.10",

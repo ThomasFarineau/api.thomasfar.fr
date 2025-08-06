@@ -1,30 +1,26 @@
-import { Controller, Get } from "../../decorators";
-import { OpenAPIService } from "@helpers/openapi/service";
 import { Hidden, Response, Spec } from "@helpers/decorators/OpenAPI";
-import { ParameterizedContext } from "koa";
+import {ParameterizedContext} from "koa";
+
+import {OpenAPIService} from "./service";
+import {Controller, Get} from "../../decorators";
 
 @Controller("/docs")
 @Spec({
-  name: "OpenAPI Documentation",
-  description: "Provides OpenAPI documentation and UI endpoints"
+  name: "OpenAPI Documentation", description: "Provides OpenAPI documentation and UI endpoints"
 })
 export default class OpenAPIController {
-  @Get()
-  @Spec({
-    name: "API Documentation Home",
-    description: "Home page for API documentation"
-  })
-  @Response({
-    status: 302,
-    description: `Redirects to the default OpenAPI UI (${OpenAPIService.getInstance().defaultUI || "swagger-ui"})`
-  })
-  async index(ctx: ParameterizedContext) {
+    @Get() @Spec({
+      name: "API Documentation Home", description: "Home page for API documentation"
+    }) @Response({
+      status: 302,
+      description: `Redirects to the default OpenAPI UI (${OpenAPIService.getInstance().defaultUI || "swagger-ui"})`
+    }) public async index(ctx: ParameterizedContext): Promise<void> {
     ctx.redirect(`/docs/${OpenAPIService.getInstance().defaultUI}`);
   }
 
-  @Get("/swagger-ui") @Hidden async swagger(ctx: ParameterizedContext) {
-    ctx.type = "html";
-    ctx.body = `
+    @Get("/swagger-ui") @Hidden public async swagger(ctx: ParameterizedContext): Promise<void> {
+      ctx.type = "html";
+      ctx.body = `
         <!DOCTYPE html>
         <html lang="en">
             <head>
@@ -48,11 +44,11 @@ export default class OpenAPIController {
             </body>
         </html>
         `;
-  }
+    }
 
-  @Get("/redoc") @Hidden async redoc(ctx: ParameterizedContext) {
-    ctx.type = "html";
-    ctx.body = `
+    @Get("/redoc") @Hidden public async redoc(ctx: ParameterizedContext): Promise<void> {
+      ctx.type = "html";
+      ctx.body = `
       <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -69,11 +65,11 @@ export default class OpenAPIController {
         </body>
       </html>
     `;
-  }
+    }
 
-  @Get("/elements") @Hidden async elements(ctx: ParameterizedContext) {
-    ctx.type = "html";
-    ctx.body = `
+    @Get("/elements") @Hidden public async elements(ctx: ParameterizedContext): Promise<void> {
+      ctx.type = "html";
+      ctx.body = `
       <!doctype html>
 <html lang="en">
   <head>
@@ -95,30 +91,56 @@ export default class OpenAPIController {
 </html>
         
     `;
-  }
+    }
 
-  @Get("/openapi") @Hidden async openapi(ctx: any) {
-    ctx.redirect("/docs/openapi.json");
-  }
+    @Get("/scalar") @Hidden public async scalar(ctx: ParameterizedContext): Promise<void> {
+      ctx.type = "html";
+      ctx.body = `
+<!doctype html>
+<html>
+  <head>
+    <title>Scalar API Reference</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1" />
+  </head>
 
-  @Get("/openapi.json")
-  @Spec({
-    name: "OpenAPI Specification",
-    description: "Redirect to OpenAPI JSON specification"
-  })
-  @Response({
-    status: 200,
-    description: "Returns the OpenAPI JSON specification",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object"
+  <body>
+    <div id="app"></div>
+
+    <!-- Load the Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+
+    <!-- Initialize the Scalar API Reference -->
+    <script>
+      Scalar.createApiReference('#app', {
+        url: '/docs/openapi.json',
+        proxyUrl: 'https://proxy.scalar.com',
+      })
+    </script>
+  </body>
+</html>
+ 
+    `;
+    }
+
+    @Get("/openapi") @Hidden public async openapi(ctx: any): Promise<void> {
+      ctx.redirect("/docs/openapi.json");
+    }
+
+    @Get("/openapi.json") @Spec({
+      name: "OpenAPI Specification", description: "Redirect to OpenAPI JSON specification"
+    }) @Response({
+      status: 200, description: "Returns the OpenAPI JSON specification", content: {
+        "application/json": {
+          schema: {
+            type: "object"
+          }
         }
       }
+    }) public async openapiJson(ctx: any): Promise<void> {
+      ctx.set("Content-Type", "application/json");
+      ctx.body = OpenAPIService.getInstance().getOpenApiJson();
     }
-  })
-  async openapiJson(ctx: any) {
-    ctx.set("Content-Type", "application/json");
-    ctx.body = OpenAPIService.getInstance().getOpenApiJson();
-  }
 }

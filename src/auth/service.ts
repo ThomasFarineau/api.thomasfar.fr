@@ -4,7 +4,7 @@ export class AuthService {
   constructor() {
   }
 
-  async login(username: string, password: string) {
+  public async login(username: string, password: string) {
     return {
       id: "user-id",
       mail: "user-mail",
@@ -12,7 +12,7 @@ export class AuthService {
     }
   }
 
-  async logout(token: string): Promise<void> {
+  public async logout(token: string): Promise<void> {
     console.log(`Logging out token: ${token}`);
   }
 }

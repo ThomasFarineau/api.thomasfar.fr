@@ -1,8 +1,8 @@
-import {Controller, Post} from "../decorators";
 import { Spec } from "@helpers/decorators/OpenAPI";
-import {AuthService} from "./service";
 import {TokenService} from "@services/TokenService";
 
+import {Controller, Post} from "../decorators";
+import {AuthService} from "./service";
 
 @Controller("/auth")
 @Spec({
@@ -18,8 +18,10 @@ export default class AuthController {
     name: "User Login",
     description: "Authenticate a user and return a JWT token"
   })
-  async login(ctx: any) {
-    const { username, password } = ctx.request.body;
+  public async login(ctx: any): Promise<void> {
+    const {
+      username, password 
+    } = ctx.request.body;
 
     try {
       const user = await this.authService.login(username, password);
@@ -36,7 +38,7 @@ export default class AuthController {
   }
 
   @Post("/refresh")
-  async refresh(ctx: any) {
+  public async refresh(ctx: any): Promise<void> {
     const { refreshToken } = ctx.request.body;
 
     if (!refreshToken) {
@@ -57,6 +59,7 @@ export default class AuthController {
         accessToken: newTokens.accessToken,
         refreshToken: newTokens.refreshToken
       };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err: any) {
       ctx.status = 403;
       ctx.body = { error: "Refresh token invalide ou expiré" };

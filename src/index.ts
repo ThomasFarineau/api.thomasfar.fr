@@ -1,10 +1,12 @@
-import config from "config";
 import "reflect-metadata";
-import UpdateController from "./controllers/UpdateController";
+
+import { ArckServer } from "@helpers/arck-server";
+import config from "config";
+
+import Controller from "./auth/controller";
 import DatabaseController from "./controllers/DatabaseController";
 import DefaultController from "./controllers/DefaultController";
-import { ArckServer } from "@helpers/arck-server";
-import Controller from "./auth/controller";
+import UpdateController from "./controllers/UpdateController";
 
 const PORT = config.get<number>("port");
 

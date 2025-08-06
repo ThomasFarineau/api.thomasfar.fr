@@ -24,7 +24,7 @@ export function getSpec(target: any, propertyKey?: string | symbol): any {
   return Reflect.getMetadata(SPEC_KEY, target);
 }
 
-export function Hidden(target: any, propertyKey?: string | symbol) {
+export function Hidden(target: any, propertyKey?: string | symbol): void {
   if (propertyKey) {
     const spec = getSpec(target, propertyKey) || {};
     spec.hidden = true;

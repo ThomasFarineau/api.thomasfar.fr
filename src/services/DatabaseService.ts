@@ -1,19 +1,19 @@
 import { connectToDB } from "@helpers/db";
 
 export class DatabaseService {
-  static async verifyConnection(): Promise<boolean> {
+  public static async verifyConnection(): Promise<boolean> {
     try {
       const db = await connectToDB();
       await db.command({
         ping: 1
       });
       return true;
-    } catch (e) {
+    } catch (_e) {
       return false;
     }
   }
 
-  static async getStatus(): Promise<{
+  public static async getStatus(): Promise<{
     ok: boolean;
     version?: string;
     dbName?: string;

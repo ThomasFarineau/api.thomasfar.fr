@@ -1,5 +1,5 @@
-import jwt, {JwtPayload} from "jsonwebtoken";
 import config from "config";
+import jwt, {JwtPayload} from "jsonwebtoken";
 
 const jwtConfig = config.get<{
     accessSecret: string;
@@ -9,7 +9,9 @@ const jwtConfig = config.get<{
 }>("jwt");
 
 export class TokenService {
-  static generateTokens(user: { id: string; role: string }) {
+  public static generateTokens(user: { id: string; role: string }): {
+    accessToken: string; refreshToken: string
+  } {
     const accessToken = jwt.sign(
       {
         sub: user.id, role: user.role 
@@ -29,11 +31,11 @@ export class TokenService {
     };
   }
 
-  static verifyAccessToken(token: string) {
-    return jwt.verify(token, jwtConfig.accessSecret);
+  public static verifyAccessToken(token: string): JwtPayload {
+    return jwt.verify(token, jwtConfig.accessSecret) as JwtPayload;
   }
 
-  static verifyRefreshToken(token: string): JwtPayload {
-    return <JwtPayload>jwt.verify(token, jwtConfig.refreshSecret);
+  public static verifyRefreshToken(token: string): JwtPayload {
+    return <JwtPayload>jwt.verify(token, jwtConfig.refreshSecret) || {};
   }
 }

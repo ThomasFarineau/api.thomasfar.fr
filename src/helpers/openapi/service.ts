@@ -1,6 +1,7 @@
-import nodePackage from "../../../package.json";
 import config from "config";
 import _ from "lodash";
+
+import nodePackage from "../../../package.json";
 
 export type SetupConfig = {
   title?: string;
@@ -30,7 +31,7 @@ export class OpenAPIService {
 
   private readonly openApiDoc: any;
 
-  defaultUI: OpenAPIUI = OpenAPIUI.SWAGGER_UI;
+  public defaultUI: OpenAPIUI = OpenAPIUI.SWAGGER_UI;
 
   private constructor() {
     this.openApiDoc = {
@@ -58,7 +59,7 @@ export class OpenAPIService {
     return OpenAPIService.instance;
   }
 
-  public getOpenApiJson() {
+  public getOpenApiJson(): typeof this.openApiDoc {
     return this.openApiDoc;
   }
 
@@ -93,7 +94,7 @@ export class OpenAPIService {
     tags.forEach((tag) => this.addTag(tag));
   }
 
-  setup(config: SetupConfig) {
+  public setup(config: SetupConfig): void {
     this.openApiDoc.info = {
       title: config.title || nodePackage.name,
       version: config.version || nodePackage.version,

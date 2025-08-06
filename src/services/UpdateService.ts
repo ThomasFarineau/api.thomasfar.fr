@@ -1,5 +1,7 @@
-import config from "config";
 import { execSync, spawn } from "node:child_process";
+
+import config from "config";
+
 import Service from "../interfaces/service.i";
 
 const UPDATE_TOKEN = config.get<string>("updateToken");
@@ -14,7 +16,7 @@ export default class UpdateService implements Service {
   /**
    * Vérifie si la branche locale est à jour avec la branche distante.
    */
-  async isUpToDate(): Promise<boolean> {
+  public async isUpToDate(): Promise<boolean> {
     await this.runCommand("git", ["fetch", "--all"]);
     const local = execSync("git rev-parse HEAD").toString().trim();
     const remote = execSync("git rev-parse @{u}").toString().trim();
@@ -24,7 +26,7 @@ export default class UpdateService implements Service {
   /**
    * Effectue le pull, installe les dépendances et compile.
    */
-  async updateCode(): Promise<void> {
+  public async updateCode(): Promise<void> {
     await this.runCommand("git", ["reset", "--hard", "origin/main"]);
     await this.runCommand("npm", ["ci", "--include=dev"]);
     await this.runCommand("npm", ["run", "build"]);
@@ -33,14 +35,14 @@ export default class UpdateService implements Service {
   /**
    * Redémarre l'application via PM2.
    */
-  async restartApp(): Promise<void> {
+  public async restartApp(): Promise<void> {
     await this.runCommand("pm2", ["restart", "api"]);
   }
 
   /**
    * Vérifie la validité du token d'update.
    */
-  validateToken(token: string | undefined): boolean {
+  public validateToken(token: string | undefined): boolean {
     return token === this.updateToken;
   }
 

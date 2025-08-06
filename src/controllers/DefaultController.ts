@@ -1,10 +1,10 @@
-import { Controller, Get } from "../decorators";
 import nodePackage from "../../package.json";
+import { Controller, Get } from "../decorators";
 
 @Controller("")
 export default class DefaultController {
   @Get("/")
-  async index(ctx: any) {
+  public async index(ctx: any): Promise<void> {
     ctx.body = {
       name: nodePackage.name,
       version: nodePackage.version,
