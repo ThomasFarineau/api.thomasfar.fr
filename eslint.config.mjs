@@ -76,6 +76,7 @@ export default [
           accessibility: "explicit", overrides: { constructors: "no-public" } 
         }
       ],
+      "quote-props": ["error", "as-needed"],
 
       /* ===== decorators ===== */
       "decorator-position/decorator-position": [

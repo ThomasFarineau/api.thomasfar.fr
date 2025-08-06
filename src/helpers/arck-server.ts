@@ -1,6 +1,7 @@
 import { ApiResponse, getSpec } from "@helpers/decorators/OpenAPI";
 import { makeLogger } from "@helpers/logger";
-import { OpenAPIService, SetupConfig, OpenAPIController } from "@helpers/openapi";
+import OpenAPIController from "@helpers/openapi/controller";
+import {OpenAPIService, SetupConfig} from "@helpers/openapi/service";
 import bodyParser from "@koa/bodyparser";
 import Router from "@koa/router";
 import Koa from "koa";

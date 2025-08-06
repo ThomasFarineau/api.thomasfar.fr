@@ -1,12 +1,13 @@
 import { Spec } from "@helpers/decorators/OpenAPI";
 import {TokenService} from "@services/TokenService";
 
-import {Controller, Post} from "../decorators";
+import {Controller, Get, Post, Use} from "../decorators";
+import {authMiddleware} from "./middleware";
 import {AuthService} from "./service";
 
 @Controller("/auth")
 @Spec({
-  name: "Auth",
+  name: "Authentication",
   description: "Authentication and authorization endpoints"
 })
 export default class AuthController {
@@ -68,4 +69,30 @@ export default class AuthController {
       ctx.body = { error: "Refresh token invalide ou expiré" };
     }
   }
+
+  @Get("/logout")
+  @Spec({
+    name: "User Logout",
+    description: "Logout a user by invalidating the access token"
+  })
+  @Use(authMiddleware)
+  public async logout(ctx: any): Promise<void> {
+    const token = ctx.request.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      ctx.status = 400;
+    }
+  }
+
+  @Post('/register')
+  @Spec({
+    name: "User Registration",
+    description: "Register a new user"
+  })
+  public async register(ctx: any): Promise<void> {
+    const {
+      username, password 
+    } = ctx.request.body;
+  }
+
 }
