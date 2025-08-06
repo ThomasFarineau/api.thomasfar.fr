@@ -46,7 +46,7 @@ export default class OpenAPIController {
         `;
     }
 
-    @Get("/redoc") @Hidden public async redoc(ctx: ParameterizedContext): Promise<void> {
+    @Get("/redocly") @Hidden public async redoc(ctx: ParameterizedContext): Promise<void> {
       ctx.type = "html";
       ctx.body = `
       <!DOCTYPE html>
@@ -125,9 +125,33 @@ export default class OpenAPIController {
     `;
     }
 
-    @Get("/openapi") @Hidden public async openapi(ctx: any): Promise<void> {
-      ctx.redirect("/docs/openapi.json");
+  @Get("/rapidoc") @Hidden
+    public async rapidoc(ctx: ParameterizedContext): Promise<void> {
+      ctx.type = "html";
+      ctx.body = `
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>RapiDoc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <rapi-doc
+      spec-url="/docs/openapi.json"
+      render-style="read"
+      show-components="true"
+      allow-server-selection
+    ></rapi-doc>
+    <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
+  </body>
+</html>
+    `;
     }
+
+  @Get("/openapi") @Hidden public async openapi(ctx: any): Promise<void> {
+    ctx.redirect("/docs/openapi.json");
+  }
 
     @Get("/openapi.json") @Spec({
       name: "OpenAPI Specification", description: "Redirect to OpenAPI JSON specification"
@@ -140,7 +164,7 @@ export default class OpenAPIController {
         }
       }
     }) public async openapiJson(ctx: any): Promise<void> {
-      ctx.set("Content-Type", "application/json");
-      ctx.body = OpenAPIService.getInstance().getOpenApiJson();
-    }
+    ctx.set("Content-Type", "application/json");
+    ctx.body = OpenAPIService.getInstance().getOpenApiJson();
+  }
 }

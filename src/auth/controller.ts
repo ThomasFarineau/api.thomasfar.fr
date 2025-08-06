@@ -38,6 +38,10 @@ export default class AuthController {
   }
 
   @Post("/refresh")
+  @Spec({
+    name: "Refresh Token",
+    description: "Refresh the access token using a valid refresh token"
+  })
   public async refresh(ctx: any): Promise<void> {
     const { refreshToken } = ctx.request.body;
 
@@ -59,8 +63,7 @@ export default class AuthController {
         accessToken: newTokens.accessToken,
         refreshToken: newTokens.refreshToken
       };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err: any) {
+    } catch (_err: any) {
       ctx.status = 403;
       ctx.body = { error: "Refresh token invalide ou expiré" };
     }
