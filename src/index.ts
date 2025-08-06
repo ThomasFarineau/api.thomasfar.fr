@@ -1,7 +1,6 @@
 import config from "config";
 import "reflect-metadata";
 import UpdateController from "./controllers/UpdateController";
-import EntityController from "./controllers/EntityController";
 import DatabaseController from "./controllers/DatabaseController";
 import DefaultController from "./controllers/DefaultController";
 import { ArckServer } from "@helpers/arck-server";
@@ -23,5 +22,5 @@ ArckServer.create(PORT)
   })
   .addController(DefaultController)
   .addController(Controller)
-  .addControllers([UpdateController, EntityController, DatabaseController])
+  .addControllers([UpdateController, DatabaseController])
   .listen();

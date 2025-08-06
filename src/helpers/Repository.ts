@@ -1,4 +1,4 @@
-import { Collection, Filter, ObjectId, WithId } from "mongodb";
+import { Collection, Filter, ObjectId, OptionalUnlessRequiredId, WithId } from "mongodb";
 import { connectToDB } from "@helpers/db";
 import { BaseEntity } from "@helpers/types/BaseEntity";
 
@@ -18,7 +18,7 @@ export class Repository<T extends BaseEntity> {
     const col = await this.collection();
     return col.findOne({
       _id: new ObjectId(id)
-    });
+    } as Filter<T>);
   }
 
   async findOne(query: { filter: Filter<T> }): Promise<WithId<T> | null> {
@@ -35,7 +35,7 @@ export class Repository<T extends BaseEntity> {
     const col = await this.collection();
     const count = await col.countDocuments({
       _id: new ObjectId(id)
-    });
+    } as Filter<T>);
     return count > 0;
   }
 
@@ -67,7 +67,7 @@ export class Repository<T extends BaseEntity> {
       _createdBy: createdBy,
       _version: 1
     } as T;
-    const res = await col.insertOne(entity);
+    const res = await col.insertOne(entity as OptionalUnlessRequiredId<T>);
     return {
       _id: res.insertedId,
       ...entity
@@ -99,7 +99,7 @@ export class Repository<T extends BaseEntity> {
     const res = await col.updateOne(
       {
         _id: new ObjectId(id)
-      },
+      } as Filter<T>,
       [
         {
           $set: {
@@ -129,7 +129,7 @@ export class Repository<T extends BaseEntity> {
     const col = await this.collection();
     const res = await col.deleteOne({
       _id: new ObjectId(id)
-    });
+    } as Filter<T>);
     return res.deletedCount > 0;
   }
 
