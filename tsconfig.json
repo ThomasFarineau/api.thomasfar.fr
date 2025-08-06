@@ -10,24 +10,13 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "baseUrl": "src",
     "paths": {
-      "@services/*": [
-        "services/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@decorators/*": [
-        "decorators/*"
-      ],
-      "@helpers/*": [
-        "helpers/*"
-      ],
+      "@services/*": ["services/*"],
+      "@utils/*": ["utils/*"],
+      "@decorators/*": ["decorators/*"],
+      "@helpers/*": ["helpers/*"]
     }
   }
 }

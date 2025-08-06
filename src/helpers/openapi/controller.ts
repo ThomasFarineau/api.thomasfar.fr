@@ -1,25 +1,30 @@
-import {Controller, Get} from "../../decorators";
-import {OpenAPIService} from "@helpers/openapi/service";
-import {Spec} from "@helpers/decorators/Spec";
-import {ParameterizedContext} from "koa";
+import { Controller, Get } from "../../decorators";
+import { OpenAPIService } from "@helpers/openapi/service";
+import { Hidden, Response, Spec } from "@helpers/decorators/OpenAPI";
+import { ParameterizedContext } from "koa";
 
-@Controller('/docs')
+@Controller("/docs")
 @Spec({
-    name: 'API Documentation', description: 'API documentation using Redoc and OpenAPI',
+  name: "OpenAPI Documentation",
+  description: "Provides OpenAPI documentation and UI endpoints"
 })
 export default class OpenAPIController {
+  @Get()
+  @Spec({
+    name: "API Documentation Home",
+    description: "Home page for API documentation"
+  })
+  @Response({
+    status: 302,
+    description: `Redirects to the default OpenAPI UI (${OpenAPIService.getInstance().defaultUI || "swagger-ui"})`
+  })
+  async index(ctx: ParameterizedContext) {
+    ctx.redirect(`/docs/${OpenAPIService.getInstance().defaultUI}`);
+  }
 
-    @Get('') @Spec({
-        name: 'API Documentation Home', description: 'Home page for API documentation',
-    }) async index(ctx: ParameterizedContext) {
-        ctx.redirect('/docs/swagger');
-    }
-
-    @Get("/swagger") @Spec({
-        name: 'Swagger UI', description: 'Swagger UI for API documentation',
-    }) async swagger(ctx: ParameterizedContext) {
-        ctx.type = "html";
-        ctx.body = `
+  @Get("/swagger-ui") @Hidden async swagger(ctx: ParameterizedContext) {
+    ctx.type = "html";
+    ctx.body = `
         <!DOCTYPE html>
         <html lang="en">
             <head>
@@ -43,13 +48,11 @@ export default class OpenAPIController {
             </body>
         </html>
         `;
-    }
+  }
 
-    @Get('/redoc') @Spec({
-        name: 'Redoc', description: 'Redoc for API documentation',
-    }) async redoc(ctx: ParameterizedContext) {
-        ctx.type = 'html';
-        ctx.body = `
+  @Get("/redoc") @Hidden async redoc(ctx: ParameterizedContext) {
+    ctx.type = "html";
+    ctx.body = `
       <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -66,20 +69,17 @@ export default class OpenAPIController {
         </body>
       </html>
     `;
-    }
+  }
 
-    @Get('/elements') @Spec({
-        name: 'API Elements', description: 'List of API elements',
-    }) async elements(ctx: ParameterizedContext) {
-        ctx.type = 'html';
-        ctx.body = `
+  @Get("/elements") @Hidden async elements(ctx: ParameterizedContext) {
+    ctx.type = "html";
+    ctx.body = `
       <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Elements in HTML</title>
-    <!-- Embed elements Elements via Web Component -->
     <script src="https://unpkg.com/@stoplight/elements/web-components.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">
   </head>
@@ -95,18 +95,30 @@ export default class OpenAPIController {
 </html>
         
     `;
-    }
+  }
 
-    @Get('/openapi') @Spec({
-        name: 'OpenAPI Specification', description: 'Redirect to OpenAPI JSON specification',
-    }) async openapi(ctx: any) {
-        ctx.redirect('/docs/openapi.json');
-    }
+  @Get("/openapi") @Hidden async openapi(ctx: any) {
+    ctx.redirect("/docs/openapi.json");
+  }
 
-    @Get('/openapi.json') @Spec({
-        name: 'OpenAPI JSON', description: 'Get the OpenAPI JSON specification',
-    }) async openapiJson(ctx: any) {
-        ctx.set('Content-Type', 'application/json');
-        ctx.body = OpenAPIService.getInstance().getOpenApiJson();
+  @Get("/openapi.json")
+  @Spec({
+    name: "OpenAPI Specification",
+    description: "Redirect to OpenAPI JSON specification"
+  })
+  @Response({
+    status: 200,
+    description: "Returns the OpenAPI JSON specification",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object"
+        }
+      }
     }
+  })
+  async openapiJson(ctx: any) {
+    ctx.set("Content-Type", "application/json");
+    ctx.body = OpenAPIService.getInstance().getOpenApiJson();
+  }
 }
