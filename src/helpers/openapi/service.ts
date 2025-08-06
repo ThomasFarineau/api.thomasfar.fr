@@ -1,3 +1,4 @@
+import {UI_TEMPLATES} from "@helpers/openapi/controller";
 import config from "config";
 import _ from "lodash";
 
@@ -20,18 +21,12 @@ export type SetupConfig = {
   tags?: { name: string; description?: string }[];
 };
 
-export enum OpenAPIUI {
-  SWAGGER_UI = "swagger-ui",
-  REDOC = "redoc",
-  ELEMENTS = "elements",
-}
-
 export class OpenAPIService {
   private static instance: OpenAPIService;
 
   private readonly openApiDoc: any;
 
-  public defaultUI: OpenAPIUI = OpenAPIUI.SWAGGER_UI;
+  public defaultUI: string = "swagger-ui"
 
   private constructor() {
     this.openApiDoc = {

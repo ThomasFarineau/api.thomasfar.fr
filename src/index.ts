@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import { ArckServer } from "@helpers/arck-server";
+import {OpenAPIService} from "@helpers/openapi";
 import config from "config";
 
 import Controller from "./auth/controller";
@@ -9,6 +10,8 @@ import DefaultController from "./controllers/DefaultController";
 import UpdateController from "./controllers/UpdateController";
 
 const PORT = config.get<number>("port");
+
+OpenAPIService.getInstance().defaultUI = "scalar"
 
 ArckServer.create(PORT)
   .enableOpenAPI({
